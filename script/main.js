@@ -1,133 +1,88 @@
-// ==============================
-// Animation Timeline
-// ==============================
 const animationTimeline = () => {
-  const textBox = document.querySelector(".hbd-chatbox");
-  const wishHbd = document.querySelector(".wish-hbd");
+  const textBoxChars = document.getElementsByClassName("hbd-chatbox")[0];
+  const hbd = document.getElementsByClassName("wish-hbd")[0];
 
-  // Split text into spans for animation
-  textBox.innerHTML = `<span>${textBox.innerText
+  textBoxChars.innerHTML = `<span>${textBoxChars.innerHTML
     .split("")
     .join("</span><span>")}</span>`;
 
-  wishHbd.innerHTML = `<span>${wishHbd.innerText
+  hbd.innerHTML = `<span>${hbd.innerHTML
     .split("")
     .join("</span><span>")}</span>`;
 
-  const ideaTextTrans = {
-    opacity: 0,
-    y: -20,
-    rotationX: 5,
-    skewX: "15deg",
-  };
-
-  const ideaTextTransLeave = {
-    opacity: 0,
-    y: 20,
-    rotationY: 5,
-    skewX: "-15deg",
-  };
+  const ideaTextTrans = { opacity: 0, y: -20 };
+  const ideaTextTransLeave = { opacity: 0, y: 20 };
 
   const tl = new TimelineMax();
 
   tl.to(".container", 0.1, { visibility: "visible" })
-    .from(".one", 0.7, { opacity: 0, y: 10 })
-    .from(".two", 0.4, { opacity: 0, y: 10 })
-
-    .to(".one", 0.7, { opacity: 0, y: 10 }, "+=2.5")
-    .to(".two", 0.7, { opacity: 0, y: 10 }, "-=1")
-
-    .from(".three", 0.7, { opacity: 0, y: 10 })
-    .to(".three", 0.7, { opacity: 0, y: 10 }, "+=2")
-
+    .from(".one", 0.7, ideaTextTrans)
+    .from(".two", 0.7, ideaTextTrans)
+    .to(".one", 0.7, ideaTextTransLeave, "+=2")
+    .to(".two", 0.7, ideaTextTransLeave, "-=1")
+    .from(".three", 0.7, ideaTextTrans)
+    .to(".three", 0.7, ideaTextTransLeave, "+=2")
     .from(".four", 0.7, { scale: 0.2, opacity: 0 })
-    .from(".fake-btn", 0.3, { scale: 0.2, opacity: 0 })
-
-    .staggerTo(".hbd-chatbox span", 0.5, { visibility: "visible" }, 0.05)
-
-    .to(".four", 0.5, {
-      scale: 0.2,
-      opacity: 0,
-      y: -150,
-    }, "+=0.7")
-
+    .staggerTo(".hbd-chatbox span", 0.05, { visibility: "visible" })
+    .to(".four", 0.5, { scale: 0.2, opacity: 0, y: -150 })
     .from(".idea-1", 0.7, ideaTextTrans)
-    .to(".idea-1", 0.7, ideaTextTransLeave, "+=1.5")
-
+    .to(".idea-1", 0.7, ideaTextTransLeave, "+=1")
     .from(".idea-2", 0.7, ideaTextTrans)
-    .to(".idea-2", 0.7, ideaTextTransLeave, "+=1.5")
-
+    .to(".idea-2", 0.7, ideaTextTransLeave, "+=1")
     .from(".idea-3", 0.7, ideaTextTrans)
-    .to(".idea-3", 0.7, ideaTextTransLeave, "+=1.5")
-
+    .to(".idea-3", 0.7, ideaTextTransLeave, "+=1")
     .from(".idea-4", 0.7, ideaTextTrans)
-    .to(".idea-4", 0.7, ideaTextTransLeave, "+=1.5")
-
+    .to(".idea-4", 0.7, ideaTextTransLeave, "+=1")
     .from(".idea-5", 0.7, ideaTextTrans)
-    .to(".idea-5", 0.7, ideaTextTransLeave, "+=2")
-
+    .to(".idea-5", 0.7, ideaTextTransLeave, "+=1")
     .staggerFrom(".idea-6 span", 0.8, {
       scale: 3,
       opacity: 0,
       rotation: 15,
-      ease: Expo.easeOut,
-    }, 0.2)
-
-    .staggerFromTo(".baloons img", 2.5,
+    })
+    .to(".idea-6", 0.5, { opacity: 0 }, "+=1")
+    .staggerFromTo(
+      ".baloons img",
+      2.5,
       { opacity: 0.9, y: 1400 },
       { opacity: 1, y: -1000 },
       0.2
     )
-
-    .from(".girl-dp", 0.6, {
+    .from(".girl-dp", 0.5, {
       scale: 3,
       opacity: 0,
-      rotationZ: -30,
+      rotationZ: -45,
     })
-
-    .staggerFrom(".wish-hbd span", 0.6, {
+    .staggerFrom(".wish-hbd span", 0.7, {
       opacity: 0,
-      y: -40,
-      rotation: 120,
-      ease: Elastic.easeOut.config(1, 0.4),
-    }, 0.08)
-
-    .from(".wish h5", 0.5, {
-      opacity: 0,
-      y: 10,
+      rotation: 150,
     })
-
-    .to(".six", 0.5, { opacity: 0 }, "+=2")
-
+    .from(".wish h5", 0.5, { opacity: 0 })
+    .staggerTo(".eight svg", 1.5, {
+      visibility: "visible",
+      opacity: 0,
+      scale: 80,
+      repeat: 3,
+      repeatDelay: 1.4,
+    })
     .staggerFrom(".nine p", 1, ideaTextTrans, 1.2);
 
-  // Replay button
-  document.getElementById("replay").addEventListener("click", () => {
-    tl.restart();
-  });
+  document.getElementById("replay").onclick = () => tl.restart();
 };
 
-// ==============================
-// Load customize.json
-// ==============================
-const fetchData = async () => {
-  const response = await fetch("customize.json");
-  const data = await response.json();
-
-  Object.keys(data).forEach((key) => {
-    const element = document.getElementById(key);
-
-    if (!element) return;
-
-    if (key === "imagePath") {
-      element.src = data[key];
-    } else {
-      element.innerText = data[key];
-    }
-  });
+const fetchData = () => {
+  fetch("customize.json")
+    .then((res) => res.json())
+    .then((data) => {
+      Object.keys(data).forEach((key) => {
+        if (key === "imagePath") {
+          document.getElementById(key).src = data[key];
+        } else {
+          document.getElementById(key).innerText = data[key];
+        }
+      });
+    });
 };
 
-// ==============================
-// Start Everything
-// ==============================
-fetchData().then(animationTimeline);
+fetchData();
+animationTimeline();
